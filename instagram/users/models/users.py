@@ -22,7 +22,7 @@ class User(InstagramModel, AbstractUser):
         }
     )
 
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
         """Return username."""
