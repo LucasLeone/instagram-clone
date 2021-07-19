@@ -22,7 +22,14 @@ class User(InstagramModel, AbstractUser):
         }
     )
 
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
+    is_verified = models.BooleanField(
+        'verified',
+        default=False,
+        help_text='Set to true when the user have verified its email address.'
+    )
 
     def __str__(self):
         """Return username."""
