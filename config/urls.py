@@ -11,5 +11,6 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
 
     path('', include(('instagram.users.urls', 'users'), namespace='users')),
+    path('', include(('instagram.posts.urls', 'posts'), namespace='posts')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

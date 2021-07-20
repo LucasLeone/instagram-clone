@@ -19,6 +19,11 @@ class Post(InstagramModel):
 
     text = models.TextField(max_length=500)
 
+    is_active = models.BooleanField(
+        'is active post',
+        default=True,
+    )
+
     def __str__(self):
         """Return post user."""
-        return self.user
+        return self.user.username

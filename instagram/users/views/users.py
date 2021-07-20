@@ -24,6 +24,7 @@ from instagram.users.serializers.users import (
 from instagram.users.models import User
 
 
+
 class UserViewSet(mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
                   viewsets.GenericViewSet):
@@ -40,8 +41,10 @@ class UserViewSet(mixins.RetrieveModelMixin,
         """Assign permissions based on action."""
         if self.action in ['signup', 'login', 'verify']:
             permissions = [AllowAny]
-        elif self.action in ['retrieve', 'update', 'partial_update', 'profile']:
+        elif self.action in ['profile', 'update', 'partial_update']:
             permissions = [IsAuthenticated, IsAccountOwner]
+        elif self.action in ['retrieve',]:
+            permissions = [IsAuthenticated]
         else:
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
