@@ -1,36 +1,37 @@
 """Posts views."""
 
 # Django REST Framework
-from rest_framework import mixins, viewsets
-from rest_framework import permissions
+from rest_framework import generics
+from rest_framework.decorators import action
 
 # Permissions
-from rest_framework.permissions import IsAuthenticated
+from instagram.posts.permissions import IsPostOwner
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 # Serializers
-from instagram.posts.serializers.posts import PostModelSerializer
+from instagram.posts.serializers.posts import (
+    PostModelSerializer,
+)
 
 # Models
 from instagram.posts.models import Post
 
 
-class PostViewSet(mixins.CreateModelMixin,
-                  mixins.ListModelMixin,
-                  mixins.DestroyModelMixin,
-                  viewsets.GenericViewSet):
-    """Post view set."""
+class PostList(generics.ListCreateAPIView):
+    """List and Create posts."""
 
+    queryset = Post.objects.all()
     serializer_class = PostModelSerializer
-    # lookup_field = 'user'
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_queryset(self):
-        """Restrict list to public-only."""
-        queryset = Post.objects.all()
-        if self.action == 'list':
-            return queryset.filter(is_active=True)
-        return queryset
+    def perform_create(self, serializer):
+        """Create post."""
+        serializer.save(user=self.request.user)
 
-    def get_permissions(self):
-        """Assign permissions based on action."""
-        permissions = [IsAuthenticated]
-        return [permission() for permission in permissions]
+
+class PostDetail(generics.RetrieveDestroyAPIView):
+    """Detail, Update and Delete post."""
+
+    queryset = Post.objects.all()
+    serializer_class = PostModelSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsPostOwner]
